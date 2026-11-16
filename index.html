@@ -1,0 +1,422 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>My Day Training Cell</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;1,600;1,800&family=Special+Elite&display=swap">
+<style>
+/* Layout: one narrow, tall "corridor" of comic panels under a hanging lamp; pages swap by hash, each panel slides in like a new frame. Single committed dark look. */
+:root{
+  --ink:#080d10;
+  --wall:#12242a;
+  --wall2:#1b363d;
+  --concrete:#2a2622;
+  --paper:#eadbb3;
+  --paper-ink:#1b1510;
+  --wood:#7d5326;
+  --blood:#b8352b;
+  --lamp:#ffe9b0;
+  --line:#030506;
+  --muted:#8fa7ab;
+  --f-display:'Anton','Impact','Arial Narrow',sans-serif;
+  --f-body:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+  --f-type:'Special Elite','Courier New',monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--ink);color:#dfe9ea;font-family:var(--f-body);font-size:19px;line-height:1.35;
+  padding-block:0 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%,#1d3b42 0%,transparent 70%),
+    repeating-linear-gradient(90deg,transparent 0 118px,#0d171a 118px 120px);
+  min-height:100%;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--ink);z-index:30}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--lamp);outline-offset:3px}
+.wrap{max-width:980px;margin-inline:auto}
+
+/* nav */
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:linear-gradient(var(--ink) 80%,transparent);padding-block:12px 14px}
+.nav-in{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;max-width:980px;margin-inline:auto}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:26px;letter-spacing:.06em;text-decoration:none}
+.badge{width:38px;height:42px;background:var(--paper);color:var(--paper-ink);display:grid;place-items:center;font-family:var(--f-display);font-size:17px;clip-path:polygon(50% 0,100% 22%,100% 78%,50% 100%,0 78%,0 22%);border:0}
+nav ul{display:flex;gap:6px;list-style:none;margin:0;padding:0;flex-wrap:wrap}
+nav a{display:block;padding:7px 14px;text-decoration:none;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:15px;border:3px solid transparent;background:#0f1b1f}
+nav a:hover{background:var(--wall2)}
+nav a[aria-current="page"]{background:var(--paper);color:var(--paper-ink);border-color:var(--line);box-shadow:3px 3px 0 #000;transform:rotate(-1.2deg)}
+
+/* panel + caption primitives */
+.panel{position:relative;background:linear-gradient(160deg,var(--wall2),var(--wall) 60%,#0d1a1e);border:4px solid var(--line);box-shadow:7px 7px 0 #000;padding:22px;overflow:hidden;min-width:0}
+.panel::after{content:"";position:absolute;inset:0;background:radial-gradient(#00000055 1.1px,transparent 1.6px) 0 0/7px 7px;pointer-events:none;opacity:.55}
+.panel>*{position:relative;z-index:1}
+.cap{display:inline-block;background:var(--paper);color:var(--paper-ink);border:3px solid #1b1510;box-shadow:4px 4px 0 #000;padding:10px 16px;font-style:italic;font-weight:600;text-transform:uppercase;letter-spacing:.02em;font-size:20px;line-height:1.25}
+.cap b{font-weight:800}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:.03em;margin:0;line-height:1}
+h1{font-size:clamp(46px,9vw,92px)}
+h2{font-size:clamp(32px,5.5vw,52px)}
+h3{font-size:26px}
+.type{font-family:var(--f-type);color:var(--muted);font-size:15px;letter-spacing:.04em}
+.lede{max-width:56ch;color:#c0d0d2;font-size:21px}
+
+/* pages */
+.page{display:none;padding-top:10px}
+.page.active{display:block}
+.page.active .panel,.page.active .cap{animation:frame .6s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*90ms)}
+@keyframes frame{from{opacity:0;transform:translateY(34px) rotate(.8deg);clip-path:inset(0 100% 0 0)}to{opacity:1;transform:none;clip-path:inset(0 0 0 0)}}
+
+/* hero: lamp scene */
+.hero{min-height:470px;padding:0;display:grid}
+.hero .scene{position:relative;padding:150px 24px 34px;display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.wire{position:absolute;top:0;left:50%;width:4px;height:70px;background:#05090b;margin-left:-2px}
+.lampwrap{position:absolute;top:0;left:50%;width:0;height:0;transform-origin:50% 0;animation:sway 7s ease-in-out infinite}
+@keyframes sway{0%,100%{transform:rotate(-1.6deg)}50%{transform:rotate(1.6deg)}}
+.shade{position:absolute;left:-62px;top:66px;width:124px;height:46px;background:linear-gradient(#0c1417,#202f34);clip-path:polygon(22% 0,78% 0,100% 100%,0 100%);border-top:3px solid #000}
+.bulb{position:absolute;left:-22px;top:104px;width:44px;height:14px;border-radius:0 0 40px 40px;background:var(--lamp);box-shadow:0 0 28px 10px #ffe9b0aa;animation:flick 5.5s linear infinite}
+.cone{position:absolute;left:-210px;top:116px;width:420px;height:420px;background:radial-gradient(ellipse 50% 70% at 50% 0%,#ffe9b038,#ffe9b010 55%,transparent 75%);clip-path:polygon(40% 0,60% 0,100% 100%,0 100%);animation:flick 5.5s linear infinite;pointer-events:none}
+@keyframes flick{0%,100%{opacity:1}6%{opacity:.55}8%{opacity:1}30%{opacity:.92}31%{opacity:.4}32.5%{opacity:1}64%{opacity:.95}66%{opacity:.6}67%{opacity:1}}
+.vent{position:absolute;top:48px;right:9%;width:150px;height:56px;border:4px solid #05090b;background:repeating-linear-gradient(#050a0c 0 5px,#1e3238 5px 10px);opacity:.8}
+.motes i{position:absolute;width:3px;height:3px;background:#ffe9b0;border-radius:50%;opacity:0;animation:mote 9s linear infinite}
+@keyframes mote{0%{opacity:0;transform:translate(0,0)}15%{opacity:.8}100%{opacity:0;transform:translate(var(--dx,20px),210px)}}
+.lines{display:flex;flex-direction:column;gap:0}
+.cap.hero-cap{font-size:clamp(20px,3.6vw,28px);padding:14px 22px;text-align:center}
+.cap .ln{display:block;opacity:0;transform:translateX(-14px);animation:ln .5s ease-out forwards}
+@keyframes ln{to{opacity:1;transform:none}}
+.floor{position:absolute;inset:auto 0 0;height:70px;background:linear-gradient(transparent,#0006)}
+
+/* today */
+.grid2{display:grid;grid-template-columns:1.2fr 1fr;gap:22px;margin-top:26px}
+.stack{display:grid;gap:22px;min-width:0}
+.big{font-family:var(--f-display);font-size:clamp(40px,7vw,64px);line-height:1;text-transform:uppercase}
+.tag{display:inline-block;font-family:var(--f-type);font-size:14px;background:var(--blood);color:#fff;padding:3px 9px;letter-spacing:.08em;text-transform:uppercase;border:2px solid #000}
+.tag.rest{background:#33505a}
+.tag.go{background:var(--blood)}
+.clock{font-family:var(--f-display);font-size:clamp(40px,8vw,70px);letter-spacing:.05em;font-variant-numeric:tabular-nums;color:var(--lamp);text-shadow:0 0 22px #ffe9b055}
+ul.ex{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px}
+ul.ex li{padding:7px 10px 7px 14px;border-left:5px solid var(--blood);background:#0a14177a}
+ul.ex li span{color:var(--muted);float:right;font-family:var(--f-type);font-size:14px;margin-left:10px}
+.mini{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;margin-top:10px}
+.mini .big{font-size:48px}
+
+/* plan */
+.plan{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:24px;margin-top:26px}
+.plan .panel:nth-child(odd){transform:rotate(-.5deg)}
+.plan .panel:nth-child(even){transform:rotate(.5deg)}
+.plan .panel.today{outline:4px solid var(--lamp);outline-offset:4px}
+.plan .dayname{font-family:var(--f-type);color:var(--lamp);letter-spacing:.14em;font-size:14px}
+.cal{margin-top:34px}
+.month{margin-top:22px}
+.days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:10px}
+.dow{font-family:var(--f-type);font-size:12px;text-align:center;color:var(--muted)}
+.day{aspect-ratio:1;border:3px solid #000;background:var(--wall);display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:var(--f-display);font-size:20px;position:relative;padding:0;min-width:0}
+.day small{font-family:var(--f-body);font-size:11px;letter-spacing:.06em;font-weight:700;color:var(--muted)}
+.day.rest{background:#0c1519;color:#6f878b}
+.day.out{visibility:hidden}
+.day.done{background:var(--paper);color:var(--paper-ink)}
+.day.done small{color:#5b4a35}
+.day.done::after{content:"";position:absolute;inset:5px;border:3px solid var(--blood);transform:rotate(-8deg);opacity:.0}
+.day.now{box-shadow:0 0 0 3px var(--lamp)}
+.stats{display:flex;gap:18px;flex-wrap:wrap;align-items:center;margin-top:12px}
+
+/* water */
+.water{display:grid;grid-template-columns:240px 1fr;gap:26px;margin-top:26px;align-items:start}
+.tank{position:relative;width:100%;max-width:240px;aspect-ratio:3/5;border:5px solid var(--line);background:#0a1417;overflow:hidden;box-shadow:7px 7px 0 #000;margin-inline:auto}
+.tank .fill{position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#4f8f9a,#1f5662);transition:height .9s cubic-bezier(.3,.9,.3,1)}
+.tank .fill::before,.tank .fill::after{content:"";position:absolute;left:-50%;top:-16px;width:200%;height:30px;border-radius:44%;background:#6fb0ba66;animation:wave 5s linear infinite}
+.tank .fill::after{top:-12px;background:#4f8f9a88;animation-duration:8s;animation-direction:reverse}
+@keyframes wave{to{transform:translateX(25%)}}
+.tank .lbl{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:42px;text-shadow:3px 3px 0 #000;z-index:2;text-align:center;line-height:1}
+.tank .ticks{position:absolute;inset:0;background:repeating-linear-gradient(transparent 0 calc(10% - 2px),#ffffff30 calc(10% - 2px) 10%);z-index:1}
+.glasses{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:10px;margin-top:16px}
+.glass{aspect-ratio:3/4;background:#0a1417;border:3px solid #000;clip-path:polygon(8% 0,92% 0,80% 100%,20% 100%);position:relative;transition:transform .2s}
+.glass:hover{transform:translateY(-3px)}
+.glass::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:linear-gradient(#6fb0ba,#2a6c78);transition:height .45s}
+.glass[aria-pressed="true"]::before{height:88%}
+.glass span{position:absolute;inset:auto 0 6px;text-align:center;font-family:var(--f-type);font-size:12px;color:#fff;z-index:2;text-shadow:1px 1px 0 #000}
+.rules{display:grid;gap:10px;margin-top:18px}
+.rules div{display:flex;justify-content:space-between;gap:12px;border-bottom:2px dashed #ffffff22;padding-bottom:8px}
+.rules b{font-family:var(--f-display);font-weight:400;font-size:26px;color:var(--lamp)}
+
+/* body page */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:20px;margin-top:26px}
+.stat .big{color:var(--lamp)}
+.log{margin-top:26px;display:grid;gap:22px;grid-template-columns:1fr 1fr}
+form.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end;margin-top:14px}
+label{display:grid;gap:4px;font-family:var(--f-type);font-size:13px;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;min-width:0}
+input{font:inherit;font-size:20px;background:#070d10;border:3px solid #000;color:#fff;padding:7px 10px;width:130px;max-width:100%}
+.btn{background:var(--paper);color:var(--paper-ink);border:3px solid #000;box-shadow:4px 4px 0 #000;padding:8px 18px;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+.btn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 #000}
+.entries{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:6px;font-variant-numeric:tabular-nums}
+.entries li{display:flex;justify-content:space-between;gap:10px;padding:6px 10px;background:#0a1417a0;border-left:5px solid var(--lamp)}
+.empty{color:var(--muted);font-family:var(--f-type);font-size:15px}
+
+footer{margin-top:50px;text-align:center}
+
+@media (max-width:760px){
+  body{font-size:18px}
+  .grid2,.water,.log{grid-template-columns:1fr}
+  .hero .scene{padding-top:140px}
+  .vent{width:90px;right:4%}
+  .day{font-size:17px}
+  .day small{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .cap .ln{opacity:1;transform:none}
+}
+</style>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#today"><span class="badge" aria-hidden="true">MD</span>My Day</a>
+    <nav aria-label="Pages"><ul>
+      <li><a href="#today" data-nav="today">Today</a></li>
+      <li><a href="#plan" data-nav="plan">Plan</a></li>
+      <li><a href="#water" data-nav="water">Water</a></li>
+      <li><a href="#body" data-nav="body">Body</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- TODAY -->
+<section class="page" id="p-today" aria-label="Today">
+  <div class="panel hero" style="--i:0">
+    <div class="scene">
+      <div class="vent" aria-hidden="true"></div>
+      <div class="wire" aria-hidden="true"></div>
+      <div class="lampwrap" aria-hidden="true"><div class="shade"></div><div class="bulb"></div><div class="cone"></div></div>
+      <div class="motes" id="motes" aria-hidden="true"></div>
+      <div class="cap hero-cap" id="heroCap" style="align-self:center;margin-top:24px">
+        <span class="ln" style="animation-delay:.5s">I am the <b>best</b></span>
+        <span class="ln" style="animation-delay:1.1s">I can do <b>anything</b></span>
+        <span class="ln" style="animation-delay:1.7s">I'm a <b>winner</b></span>
+        <span class="ln" style="animation-delay:2.3s">Today is my day.</span>
+      </div>
+      <div class="type" style="align-self:center">186 cm · 88 kg · fat loss, core, strength · 5:30 to 6:45 AM</div>
+      <div class="floor" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="panel" style="--i:2" id="todayCard">
+      <div class="type" id="tDate"></div>
+      <div class="big" id="tTitle" style="margin-top:8px"></div>
+      <div style="margin-top:10px"><span class="tag" id="tTag"></span> <span class="type" id="tWeek"></span></div>
+      <p class="lede" id="tSub" style="margin:12px 0 0"></p>
+      <ul class="ex" id="tEx"></ul>
+    </div>
+    <div class="stack">
+      <div class="panel" style="--i:3">
+        <div class="type">Next 5:30 AM start</div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="type" id="clockNote"></div>
+      </div>
+      <div class="panel" style="--i:4">
+        <div class="type">Water today</div>
+        <div class="mini"><span class="big" id="tWater">3.5</span><span class="type">litres</span></div>
+        <p style="margin:8px 0 0"><a href="#water" class="tag go" style="text-decoration:none">Log glasses</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section class="page" id="p-plan" aria-label="Plan">
+  <div class="cap" style="--i:0"><b>Seven</b> days. <b>Five</b> mornings. No excuses.</div>
+  <h2 style="margin-top:18px">Weekly plan</h2>
+  <p class="lede">Monday and Friday belong to teacher training. Every other day starts at 5:30 AM with a glass of water and a 5 minute warm up.</p>
+  <div class="plan" id="planGrid"></div>
+
+  <div class="cal">
+    <h2>17 Nov to 31 Jan</h2>
+    <div class="stats">
+      <span class="big" id="doneCount">0</span><span class="type">workouts marked done of <span id="workTotal">0</span></span>
+      <span class="type">Tap a day to mark it done.</span>
+    </div>
+    <div id="months"></div>
+  </div>
+</section>
+
+<!-- WATER -->
+<section class="page" id="p-water" aria-label="Water">
+  <div class="cap" style="--i:0">Drink it. <b>Every</b> glass.</div>
+  <h2 style="margin-top:18px">Water tracker</h2>
+  <div class="water">
+    <div class="tank" style="--i:1" role="img" aria-label="Water level"><div class="ticks"></div><div class="fill" id="fill"></div><div class="lbl" id="tankLbl">0 L</div></div>
+    <div class="panel" style="--i:2">
+      <div class="type" id="wDate"></div>
+      <div class="big" id="wGoal" style="margin-top:6px"></div>
+      <p class="lede" style="margin:8px 0 0">Each glass is 250 ml. Tap a glass when you finish it.</p>
+      <div class="glasses" id="glasses"></div>
+      <div class="rules">
+        <div><span>Wednesday rope day</span><b>4 L</b></div>
+        <div><span>Tue, Thu, Sat, Sun</span><b>3.5 L</b></div>
+        <div><span>Mon, Fri teacher training</span><b>3 L</b></div>
+        <div><span>Right after waking</span><b>500 ml</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BODY -->
+<section class="page" id="p-body" aria-label="Body">
+  <div class="cap" style="--i:0">Fat down. Strength <b>up</b>.</div>
+  <h2 style="margin-top:18px">Body and fuel</h2>
+  <div class="stat-grid">
+    <div class="panel stat" style="--i:1"><div class="type">Height</div><div class="big">186<small class="type"> cm</small></div></div>
+    <div class="panel stat" style="--i:2"><div class="type">Start weight</div><div class="big">88<small class="type"> kg</small></div></div>
+    <div class="panel stat" style="--i:3"><div class="type">BMI at start</div><div class="big">25.4</div></div>
+    <div class="panel stat" style="--i:4"><div class="type">Fat loss pace</div><div class="big">0.4 to 0.6<small class="type"> kg/wk</small></div></div>
+    <div class="panel stat" style="--i:5"><div class="type">Protein</div><div class="big">140 to 160<small class="type"> g</small></div></div>
+    <div class="panel stat" style="--i:6"><div class="type">Sleep</div><div class="big">7 to 8<small class="type"> h</small></div><div class="type">Bed by 10:00 PM</div></div>
+  </div>
+  <div class="log">
+    <div class="panel" style="--i:7">
+      <h3>Sunday weigh-in</h3>
+      <form class="row" id="logForm">
+        <label for="inKg">Weight (kg)<input id="inKg" type="number" step="0.1" min="30" max="250" inputmode="decimal" value="88.0" required></label>
+        <label for="inWaist">Waist (cm)<input id="inWaist" type="number" step="0.5" min="40" max="200" inputmode="decimal" placeholder="at navel"></label>
+        <button class="btn" type="submit">Save</button>
+      </form>
+      <p class="type">Weigh before eating. Measure waist at the navel.</p>
+    </div>
+    <div class="panel" style="--i:8">
+      <h3>Log</h3>
+      <ul class="entries" id="entries"></ul>
+    </div>
+  </div>
+</section>
+
+<footer class="type">One dumbbell. One rope. One gripper. Show up at 5:30.</footer>
+</main>
+
+<script>
+(function(){
+var DAYS=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var PLAN={
+1:{t:'Rest day',tag:'rest',w:3,sub:'Teacher training. Evening 20 min walk and 10 min stretch.',ex:[['20 min walk','evening'],['Stretch','10 min']]},
+2:{t:'Upper body + core',tag:'go',w:3.5,sub:'Push, pull and grip. Slow lowering, clean form.',ex:[['Push-ups','4 x 10 to 15'],['Single-arm row','4 x 10 each'],['Floor press','3 x 10 each'],['Overhead press','3 x 8 to 10 each'],['Biceps curl','3 x 12 each'],['Triceps extension','3 x 12'],['Hand gripper','3 x 15 each'],['Plank','3 x 40 s'],['Dead bug','3 x 10 each']]},
+3:{t:'Rope intervals + abs',tag:'go',w:4,sub:'The fat-loss morning. Sweat hard, drink more.',ex:[['Warm-up rope','5 min'],['Fast jumping','10 x 40 s on, 20 s off'],['Boxer step / high knees','10 x 30 s on, 30 s off'],['Squat, push-up, climber','4 rounds'],['Abs circuit','3 rounds'],['Cool-down','5 min']]},
+4:{t:'Lower body + core',tag:'go',w:3.5,sub:'Legs and glutes with one dumbbell.',ex:[['Goblet squat','4 x 12'],['Romanian deadlift','4 x 12'],['Bulgarian split squat','3 x 10 each'],['Reverse lunge','3 x 10 each'],['Glute bridge','3 x 15'],['Calf raise','3 x 15 to 20 each'],['Suitcase carry','3 x 30 s each'],['Side plank','3 x 30 s each']]},
+5:{t:'Rest day',tag:'rest',w:3,sub:'Teacher training. Evening 20 min walk and 10 min stretch.',ex:[['20 min walk','evening'],['Stretch','10 min']]},
+6:{t:'Full body circuit',tag:'go',w:3.5,sub:'Four rounds, 90 seconds rest after each.',ex:[['Dumbbell thruster','10'],['Dumbbell swing','12 each'],['Push-ups','12'],['Single-arm row','10 each'],['Skipping rope','60 s'],['Plank','40 s'],['Gripper finisher','3 x 20 each']]},
+0:{t:'Active recovery',tag:'rest',w:3.5,sub:'Move easy. Let the muscle rebuild.',ex:[['Brisk walk','40 min'],['Mobility','15 min'],['Light core','plank, dead bug, bird dog']]}
+};
+var START=new Date(2026,10,17), END=new Date(2027,0,31), WEEK1=new Date(2026,10,16);
+function key(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function load(k,def){try{var v=localStorage.getItem(k);return v?JSON.parse(v):def}catch(e){return def}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+function fmt(d){return DAYS[d.getDay()]+' '+d.getDate()+' '+d.toLocaleString('en-GB',{month:'long'})+' '+d.getFullYear()}
+function weekOf(d){var n=Math.floor((new Date(d.getFullYear(),d.getMonth(),d.getDate())-WEEK1)/604800000)+1;return n}
+var now=new Date(), todayKey=key(now);
+
+/* motes */
+var m=document.getElementById('motes');
+for(var i=0;i<16;i++){var s=document.createElement('i');s.style.left=(38+Math.random()*24)+'%';s.style.top=(90+Math.random()*60)+'px';s.style.setProperty('--dx',(Math.random()*60-30)+'px');s.style.animationDelay=(Math.random()*9)+'s';s.style.animationDuration=(7+Math.random()*6)+'s';m.appendChild(s)}
+
+/* today */
+function renderToday(){
+  var p=PLAN[now.getDay()];
+  document.getElementById('tDate').textContent=fmt(now);
+  document.getElementById('tTitle').textContent=p.t;
+  var tag=document.getElementById('tTag');tag.textContent=p.tag==='go'?'5:30 to 6:45 AM':'Rest';tag.className='tag '+p.tag;
+  var wk=weekOf(now),inRange=now>=START&&now<=new Date(2027,0,31,23,59);
+  document.getElementById('tWeek').textContent=inRange?'Week '+wk+' of 11':(now<START?'Plan starts 17 Nov':'Plan complete');
+  document.getElementById('tSub').textContent=p.sub;
+  document.getElementById('tEx').innerHTML=p.ex.map(function(e){return '<li>'+e[0]+'<span>'+e[1]+'</span></li>'}).join('');
+  document.getElementById('tWater').textContent=p.w;
+}
+function tick(){
+  var n=new Date(),t=new Date(n.getFullYear(),n.getMonth(),n.getDate(),5,30,0),note='';
+  var end=new Date(n.getFullYear(),n.getMonth(),n.getDate(),6,45,0);
+  if(n>=t&&n<end){document.getElementById('clock').textContent='LIVE';note='Session window open until 6:45 AM';}
+  else{if(n>=end)t.setDate(t.getDate()+1);var d=t-n,h=Math.floor(d/3600000),mi=Math.floor(d%3600000/60000),se=Math.floor(d%60000/1000);
+    document.getElementById('clock').textContent=[h,mi,se].map(function(x){return String(x).padStart(2,'0')}).join(':');note='Wake up, drink 500 ml, start the warm-up.';}
+  document.getElementById('clockNote').textContent=note;
+}
+
+/* plan */
+function renderPlan(){
+  var order=[1,2,3,4,5,6,0],g=document.getElementById('planGrid');
+  g.innerHTML=order.map(function(d,i){var p=PLAN[d];
+    return '<article class="panel'+(d===now.getDay()?' today':'')+'" style="--i:'+(i+1)+'"><div class="dayname">'+DAYS[d].toUpperCase()+'</div><h3 style="margin-top:6px">'+p.t+'</h3><div style="margin-top:8px"><span class="tag '+p.tag+'">'+(p.tag==='go'?'5:30 to 6:45':'Rest')+'</span> <span class="type">'+p.w+' L water</span></div><ul class="ex">'+p.ex.map(function(e){return '<li>'+e[0]+'<span>'+e[1]+'</span></li>'}).join('')+'</ul></article>'}).join('');
+}
+var done=load('md-done',{});
+function renderCal(){
+  var wrap=document.getElementById('months'),html='',total=0,cnt=0;
+  var months=[[2026,10],[2026,11],[2027,0]];
+  months.forEach(function(ym){
+    var first=new Date(ym[0],ym[1],1),days=new Date(ym[0],ym[1]+1,0).getDate(),lead=(first.getDay()+6)%7;
+    html+='<div class="month"><h3>'+first.toLocaleString('en-GB',{month:'long'})+' '+ym[0]+'</h3><div class="days">';
+    ['M','T','W','T','F','S','S'].forEach(function(x){html+='<div class="dow">'+x+'</div>'});
+    for(var i=0;i<lead;i++)html+='<div class="day out"></div>';
+    for(var d=1;d<=days;d++){
+      var dt=new Date(ym[0],ym[1],d),k=key(dt);
+      if(dt<START||dt>END){html+='<div class="day out"></div>';continue}
+      var p=PLAN[dt.getDay()],isRest=p.tag==='rest'&&(dt.getDay()===1||dt.getDay()===5);
+      var cls='day'+(isRest?' rest':'')+(done[k]?' done':'')+(k===todayKey?' now':'');
+      if(!isRest){total++;if(done[k])cnt++}
+      html+='<button class="'+cls+'" data-k="'+k+'" aria-pressed="'+(!!done[k])+'" aria-label="'+fmt(dt)+', '+p.t+'">'+d+'<small>'+(isRest?'REST':p.t.split(' ')[0].toUpperCase())+'</small></button>';
+    }
+    html+='</div></div>';
+  });
+  wrap.innerHTML=html;
+  document.getElementById('doneCount').textContent=cnt;document.getElementById('workTotal').textContent=total;
+}
+document.getElementById('months').addEventListener('click',function(e){
+  var b=e.target.closest('.day[data-k]');if(!b)return;var k=b.getAttribute('data-k');
+  if(done[k])delete done[k];else done[k]=1;save('md-done',done);renderCal();
+});
+
+/* water */
+var wstate=load('md-water',{});
+function renderWater(){
+  var p=PLAN[now.getDay()],total=Math.round(p.w*4),have=Math.min(wstate[todayKey]||0,total);
+  document.getElementById('wDate').textContent=fmt(now);
+  document.getElementById('wGoal').textContent=p.w+' litres today';
+  var gl=document.getElementById('glasses'),h='';
+  for(var i=1;i<=total;i++)h+='<button class="glass" data-n="'+i+'" aria-pressed="'+(i<=have)+'" aria-label="Glass '+i+'"><span>'+i+'</span></button>';
+  gl.innerHTML=h;
+  document.getElementById('fill').style.height=Math.round(have/total*100)+'%';
+  document.getElementById('tankLbl').innerHTML=(have*0.25).toFixed(2).replace(/\.?0+$/,'')+' L<br><span style="font-size:18px;font-family:var(--f-type)">of '+p.w+' L</span>';
+}
+document.getElementById('glasses').addEventListener('click',function(e){
+  var b=e.target.closest('.glass');if(!b)return;var n=+b.getAttribute('data-n'),cur=wstate[todayKey]||0;
+  wstate[todayKey]=(n===cur)?n-1:n;save('md-water',wstate);renderWater();
+});
+
+/* body log */
+var log=load('md-log',[]);
+function renderLog(){
+  var ul=document.getElementById('entries');
+  ul.innerHTML=log.length?log.slice().reverse().map(function(e){return '<li><span>'+e.d+'</span><span>'+e.kg+' kg'+(e.w?' · waist '+e.w+' cm':'')+'</span></li>'}).join(''):'<li class="empty" style="border:0;background:none">No entries yet. Start weight is 88 kg.</li>';
+}
+document.getElementById('logForm').addEventListener('submit',function(e){
+  e.preventDefault();var kg=parseFloat(document.getElementById('inKg').value),w=parseFloat(document.getElementById('inWaist').value);
+  if(!kg)return;log.push({d:fmt(new Date()),kg:kg,w:isNaN(w)?null:w});log=log.slice(-30);save('md-log',log);renderLog();
+});
+
+/* routing */
+var pages=['today','plan','water','body'];
+function route(){
+  var h=(location.hash||'#today').slice(1);if(pages.indexOf(h)<0)h='today';
+  pages.forEach(function(p){
+    var s=document.getElementById('p-'+p),on=p===h;s.classList.remove('active');
+    if(on){void s.offsetWidth;s.classList.add('active')}
+  });
+  document.querySelectorAll('[data-nav]').forEach(function(a){if(a.getAttribute('data-nav')===h)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  window.scrollTo(0,0);
+}
+window.addEventListener('hashchange',route);
+renderToday();renderPlan();renderCal();renderWater();renderLog();tick();setInterval(tick,1000);route();
+})();
+</script>
+
+</body></html>
